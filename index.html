@@ -7,9 +7,7 @@
             var segments = path.split('/');
             if (segments[1] === 'solacera' || segments[1] === 'solace') {
                     base.href = '/' + segments[1] + '/';
-                    var targetPath = path.substring(segments[1].length + 1) || '/';
-                    window.history.replaceState(null, '', targetPath + window.location.search + window.location.hash);
-            } else {
+                  
                     base.href = '/';
             }
             document.head.appendChild(base);
