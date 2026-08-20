@@ -1,31 +1,30 @@
-import { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useSegments, Slot } from 'expo-router';
 import { Home, MessageCircle, Heart, Users, Sparkles } from 'lucide-react-native';
-import { Colors, FontFamily, FontSize, Spacing, Radii } from '../../constants/theme';
+import { Colors, FontFamily, FontSize, Radii } from '../../constants/theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const NAV_ITEMS = [
-  { name: 'index',     label: 'Home',       Icon: Home,          href: '/(tabs)/' },
-  { name: 'companion', label: 'Companion',  Icon: MessageCircle, href: '/(tabs)/companion' },
-  { name: 'wellness',  label: 'Wellness',   Icon: Heart,         href: '/(tabs)/wellness' },
-  { name: 'family',    label: 'Family',     Icon: Users,         href: '/(tabs)/family' },
-  { name: 'solace',    label: 'Solace Time',Icon: Sparkles,      href: '/(tabs)/solace' },
+  { name: 'index',     label: 'Home',        Icon: Home,           path: '/(tabs)' },
+  { name: 'companion', label: 'Companion',   Icon: MessageCircle,  path: '/(tabs)/companion' },
+  { name: 'wellness',  label: 'Wellness',    Icon: Heart,          path: '/(tabs)/wellness' },
+  { name: 'family',    label: 'Family',      Icon: Users,          path: '/(tabs)/family' },
+  { name: 'solace',    label: 'Solace Time', Icon: Sparkles,       path: '/(tabs)/solace' },
 ];
 
 export default function TabsLayout() {
   const router = useRouter();
   const segments = useSegments();
 
-  // Determine active tab from segments
-  const lastSegment = segments[segments.length - 1] ?? 'index';
+  const currentSegment = segments[segments.length - 1] ?? 'index';
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.root}>
-        {/* ── Top navbar ───────────────────────────────────── */}
+        {/* Top Navbar */}
         <View style={styles.navbar}>
-          <TouchableOpacity style={styles.logo} onPress={() => router.push('/(tabs)/')}>
+          <TouchableOpacity style={styles.logo} onPress={() => router.push('/(tabs)')} activeOpacity={0.8}>
             <View style={styles.logoIcon}>
               <Text style={styles.logoEmoji}>🌿</Text>
             </View>
@@ -33,13 +32,13 @@ export default function TabsLayout() {
           </TouchableOpacity>
 
           <View style={styles.navLinks}>
-            {NAV_ITEMS.map(({ name, label, Icon, href }) => {
-              const isActive = lastSegment === name || (name === 'index' && (lastSegment === '(tabs)' || lastSegment === ''));
+            {NAV_ITEMS.map(({ name, label, Icon, path }) => {
+              const isActive = currentSegment === name || (name === 'index' && (currentSegment === '(tabs)' || currentSegment === ''));
               return (
                 <TouchableOpacity
                   key={name}
                   style={[styles.navItem, isActive && styles.navItemActive]}
-                  onPress={() => router.push(href as any)}
+                  onPress={() => router.push(path as any)}
                   activeOpacity={0.7}
                 >
                   <Icon
@@ -56,7 +55,7 @@ export default function TabsLayout() {
           </View>
         </View>
 
-        {/* ── Page content ─────────────────────────────────── */}
+        {/* Content */}
         <ScrollView
           style={styles.body}
           contentContainerStyle={styles.bodyContent}
@@ -77,7 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ece9e0',
   },
-  // ── Navbar ──────────────────────────────────────────────────
   navbar: {
     height: 60,
     backgroundColor: '#f5f2ea',
@@ -132,7 +130,6 @@ const styles = StyleSheet.create({
   navLabelActive: {
     color: Colors.white,
   },
-  // ── Body ────────────────────────────────────────────────────
   body: {
     flex: 1,
   },
