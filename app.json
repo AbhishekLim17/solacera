@@ -1,25 +1,45 @@
-{
+﻿{
   "expo": {
-    "name": "solacera",
+    "name": "Solacera",
     "slug": "solacera",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "scheme": "solacera",
+    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.solacera.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f7f5ed"
       },
-      "predictiveBackGestureEnabled": false
+      "package": "com.solacera.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#5d9461"
+        }
+      ],
+      [
+        "@react-native-community/datetimepicker",
+        {}
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
   }
 }
