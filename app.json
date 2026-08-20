@@ -1,45 +1,49 @@
 ﻿{
-  "expo": {
-    "name": "Solacera",
-    "slug": "solacera",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "scheme": "solacera",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "com.solacera.app"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#f7f5ed"
-      },
-      "package": "com.solacera.app"
-    },
-    "web": {
-      "favicon": "./assets/favicon.png",
-      "bundler": "metro"
-    },
-    "plugins": [
-      "expo-router",
-      "expo-font",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/icon.png",
-          "color": "#5d9461"
-        }
-      ],
-      [
-        "@react-native-community/datetimepicker",
-        {}
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
-  }
+    "expo":  {
+                 "name":  "Solacera",
+                 "slug":  "solacera",
+                 "version":  "1.0.0",
+                 "orientation":  "portrait",
+                 "icon":  "./assets/icon.png",
+                 "userInterfaceStyle":  "light",
+                 "scheme":  "solacera",
+                 "newArchEnabled":  true,
+                 "ios":  {
+                             "supportsTablet":  false,
+                             "bundleIdentifier":  "com.solacera.app"
+                         },
+                 "android":  {
+                                 "adaptiveIcon":  {
+                                                      "foregroundImage":  "./assets/adaptive-icon.png",
+                                                      "backgroundColor":  "#f7f5ed"
+                                                  },
+                                 "package":  "com.solacera.app"
+                             },
+                 "web":  {
+                             "favicon":  "./assets/favicon.png",
+                             "bundler":  "metro",
+                             "baseUrl":  "/solacera"
+                         },
+                 "plugins":  [
+                                 "expo-router",
+                                 "expo-font",
+                                 [
+                                     "expo-notifications",
+                                     {
+                                         "icon":  "./assets/icon.png",
+                                         "color":  "#5d9461"
+                                     }
+                                 ],
+                                 [
+                                     "@react-native-community/datetimepicker",
+                                     {
+
+                                     }
+                                 ]
+                             ],
+                 "experiments":  {
+                                     "typedRoutes":  true,
+                                     "baseUrl":  "/solacera"
+                                 }
+             }
 }
