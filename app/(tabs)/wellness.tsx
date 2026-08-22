@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import { Pill, Droplet, Moon, Activity, Trash2 } from 'lucide-react-native';
 import { Colors, FontFamily, FontSize, Spacing, Radii } from '../../constants/theme';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 type ReminderType = 'medicine' | 'hydration' | 'sleep' | 'activity';
 
@@ -21,6 +22,7 @@ const TYPE_COLOR: Record<ReminderType, string> = { medicine: Colors.primary, hyd
 let idCounter = 100;
 
 export default function WellnessScreen() {
+  const { isMobile } = useBreakpoint();
   const [tab, setTab] = useState<'medicine' | 'wellness'>('medicine');
   const [reminders, setReminders] = useState<Reminder[]>([
     { id: '1', type: 'medicine', name: 'Vitamin D', time: '08:30', completed: false },
@@ -112,12 +114,12 @@ export default function WellnessScreen() {
         <>
           <View style={styles.formCard}>
             <Text style={styles.formTitle}>Add a medicine reminder</Text>
-            <View style={styles.twoCol}>
+            <View style={[styles.twoCol, isMobile && styles.twoColMobile]}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.fieldLabel}>Medicine name</Text>
                 <TextInput style={styles.fieldInput} value={medName} onChangeText={setMedName} placeholder="e.g. Vitamin D" placeholderTextColor={Colors.textMuted} />
               </View>
-              <View style={{ width: 160 }}>
+              <View style={isMobile ? { width: "100%" } : { width: 160 }}>
                 <Text style={styles.fieldLabel}>Time</Text>
                 <TextInput style={styles.fieldInput} value={medTime} onChangeText={setMedTime} placeholder="--:--" placeholderTextColor={Colors.textMuted} />
               </View>
@@ -138,7 +140,7 @@ export default function WellnessScreen() {
         <>
           <View style={styles.formCard}>
             <Text style={styles.formTitle}>Add a wellness reminder</Text>
-            <View style={styles.catGrid}>
+            <View style={[styles.catGrid, isMobile && styles.catGridMobile]}>
               {WELLNESS_CATS.map((c) => {
                 const sel = wellCat === c.type;
                 return (
@@ -154,12 +156,12 @@ export default function WellnessScreen() {
                 );
               })}
             </View>
-            <View style={styles.twoCol}>
+            <View style={[styles.twoCol, isMobile && styles.twoColMobile]}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.fieldLabel}>What to do</Text>
                 <TextInput style={styles.fieldInput} value={wellDesc} onChangeText={setWellDesc} placeholder="e.g. Drink a glass of water" placeholderTextColor={Colors.textMuted} />
               </View>
-              <View style={{ width: 160 }}>
+              <View style={isMobile ? { width: "100%" } : { width: 160 }}>
                 <Text style={styles.fieldLabel}>Time</Text>
                 <TextInput style={styles.fieldInput} value={wellTime} onChangeText={setWellTime} placeholder="--:--" placeholderTextColor={Colors.textMuted} />
               </View>
@@ -212,4 +214,6 @@ const styles = StyleSheet.create({
   strikethrough: { textDecorationLine: 'line-through', color: Colors.textMuted },
   remTime: { fontFamily: FontFamily.sans, fontSize: FontSize.xs, color: Colors.textMuted, marginTop: 1 },
   empty: { fontFamily: FontFamily.sans, fontSize: FontSize.sm, color: Colors.textMuted, paddingVertical: 14 },
+  twoColMobile: { flexDirection: 'column' },
+  catGridMobile: { flexWrap: 'wrap' },
 });

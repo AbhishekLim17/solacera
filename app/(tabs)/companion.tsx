@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Sparkles, Send, RotateCcw } from 'lucide-react-native';
 import { Colors, FontFamily, FontSize, Radii } from '../../constants/theme';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 type Role = 'bot' | 'user';
 interface Message { id: string; sender: Role; content: string; time: string }
@@ -17,28 +18,28 @@ function getTime(): string {
 }
 function uid(): string { return Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
-// ── System prompt ─────────────────────────────────────────────────────────────
-const SYSTEM_PROMPT = `You are Solacera, a warm and emotionally intelligent AI companion. You talk with members of a family — parents, adult children, siblings — who may be going through stressful, emotional, or difficult situations at home.
+// â”€â”€ System prompt â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+const SYSTEM_PROMPT = `You are Solacera, a warm and emotionally intelligent AI companion. You talk with members of a family â€” parents, adult children, siblings â€” who may be going through stressful, emotional, or difficult situations at home.
 
 Your personality:
 - Warm, calm, and genuinely curious about what the person is feeling
 - You NEVER label or categorize the person (do NOT say "as a caregiver", "I understand caregivers feel", or similar)
-- You respond to what they actually said — not a template about their role
+- You respond to what they actually said â€” not a template about their role
 - You ask one thoughtful follow-up question per reply
 - You validate their feeling first, then gently explore it
-- Responses are 2–4 sentences max — natural and conversational, never clinical
+- Responses are 2â€“4 sentences max â€” natural and conversational, never clinical
 - You never give medical advice or diagnoses
 - You never make up facts or invent resources
-- If something seems off-topic (math homework, coding, news), gently say: "I'm here to talk about whatever's on your heart — is there something weighing on you?"
-- If someone sounds in serious distress or mentions self-harm, respond with care: "What you're sharing sounds really heavy. Please consider reaching out to iCall at 9152987821 — they're free and confidential."
+- If something seems off-topic (math homework, coding, news), gently say: "I'm here to talk about whatever's on your heart â€” is there something weighing on you?"
+- If someone sounds in serious distress or mentions self-harm, respond with care: "What you're sharing sounds really heavy. Please consider reaching out to iCall at 9152987821 â€” they're free and confidential."
 
 Keep it real. Keep it human. No therapy jargon. No repeating their role back at them.`;
 
-// ── Groq API ──────────────────────────────────────────────────────────────────
+// â”€â”€ Groq API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function askGroq(history: { role: string; content: string }[]): Promise<string | null> {
   const key = process.env.EXPO_PUBLIC_GROQ_API_KEY;
   if (!key || key.includes('YOUR_') || key.length < 30) {
-    console.log('[Solacera] No valid key — using fallback');
+    console.log('[Solacera] No valid key â€” using fallback');
     return null;
   }
   try {
@@ -71,12 +72,12 @@ async function askGroq(history: { role: string; content: string }[]): Promise<st
   }
 }
 
-// ── Local fallback — natural, no role-labeling ────────────────────────────────
+// â”€â”€ Local fallback â€” natural, no role-labeling â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FALLBACK: { match: RegExp; replies: string[] }[] = [
   {
     match: /tired|exhaust|drained|worn.?out|burnout/i,
     replies: [
-      "That kind of tiredness goes deeper than just sleep — it's the weight of everything at once. What's been the hardest part lately?",
+      "That kind of tiredness goes deeper than just sleep â€” it's the weight of everything at once. What's been the hardest part lately?",
       "When you're running on empty, even small things feel impossible. How long have you been feeling this way?",
       "That's a real and valid kind of tired. What would feel like even the smallest relief right now?",
     ],
@@ -86,21 +87,21 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
     replies: [
       "When everything stacks up, it's hard to know where to even begin. What's pressing down on you the most right now?",
       "Feeling overwhelmed usually means you've been carrying more than one person should. Is there anyone who can take even a small piece of this off you?",
-      "That feeling of too-much is exhausting. What's contributing to it most — the practical stuff, the emotional load, or both?",
+      "That feeling of too-much is exhausting. What's contributing to it most â€” the practical stuff, the emotional load, or both?",
     ],
   },
   {
     match: /lonely|alone|isolat|no one understand|nobody understand/i,
     replies: [
-      "That kind of loneliness — where you're surrounded by people but still feel unseen — is one of the heaviest feelings. Who knows what your days are actually like?",
+      "That kind of loneliness â€” where you're surrounded by people but still feel unseen â€” is one of the heaviest feelings. Who knows what your days are actually like?",
       "Feeling alone in something this big is really hard. When's the last time someone genuinely asked how you were doing?",
-      "Being unseen while giving everything you have — that's a particular kind of pain. What does a typical day look like for you?",
+      "Being unseen while giving everything you have â€” that's a particular kind of pain. What does a typical day look like for you?",
     ],
   },
   {
     match: /guilt|guilty|bad person|should have|shouldn.?t have|feel like I failed/i,
     replies: [
-      "Guilt usually shows up loudest for the people who care most. What's making you feel this way — something specific happened?",
+      "Guilt usually shows up loudest for the people who care most. What's making you feel this way â€” something specific happened?",
       "That inner critic can be really harsh. What would you say to someone you love if they felt exactly the same way you do right now?",
       "Guilt and responsibility can feel the same, but they're not. What specifically is making you feel like you fell short?",
     ],
@@ -108,15 +109,15 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
   {
     match: /angry|frustrated|resentful|resentment|rage|furious/i,
     replies: [
-      "Anger usually has something underneath it — something unfair, or a need that's going unmet. What set it off today?",
-      "That frustration makes sense. What's been building up for you — has it been one thing, or a lot of small things?",
+      "Anger usually has something underneath it â€” something unfair, or a need that's going unmet. What set it off today?",
+      "That frustration makes sense. What's been building up for you â€” has it been one thing, or a lot of small things?",
       "Resentment doesn't come from nowhere. What do you think yours is trying to tell you?",
     ],
   },
   {
     match: /sad|grief|griev|cry|crying|miss them|miss him|miss her|heartbroken/i,
     replies: [
-      "That sadness sounds real and deep. What's brought it up today — something specific, or has it just been sitting with you?",
+      "That sadness sounds real and deep. What's brought it up today â€” something specific, or has it just been sitting with you?",
       "It's okay to feel the weight of this without needing to fix it right now. What are you missing most?",
       "Grief has a way of showing up at unexpected moments. How long have you been carrying this?",
     ],
@@ -124,7 +125,7 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
   {
     match: /sleep|can.?t sleep|insomnia|not sleeping|awake at night/i,
     replies: [
-      "Not sleeping makes everything — patience, clarity, resilience — so much harder. Is it that your mind won't stop, or something else keeping you up?",
+      "Not sleeping makes everything â€” patience, clarity, resilience â€” so much harder. Is it that your mind won't stop, or something else keeping you up?",
       "Broken sleep takes a real toll. How long has this been going on, and what's usually running through your head at night?",
       "That's rough. Sleep deprivation changes how everything feels. Is it a person's needs waking you, or your own thoughts?",
     ],
@@ -132,7 +133,7 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
   {
     match: /wish I didn.?t|don.?t want to|can.?t do this|give up|walk away|had enough/i,
     replies: [
-      "Wanting to step back from an impossible situation doesn't make you a bad person — it makes you human. What would need to change for things to feel even slightly manageable?",
+      "Wanting to step back from an impossible situation doesn't make you a bad person â€” it makes you human. What would need to change for things to feel even slightly manageable?",
       "Those feelings are worth saying out loud rather than burying. What's pushed you to this point?",
       "Feeling like you've hit a wall is a signal that something needs to shift. What would actually help right now?",
     ],
@@ -141,14 +142,14 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
     match: /help|what should I do|don.?t know what to do|advice|how do I|guidance/i,
     replies: [
       "Let's think through this together. What's the situation, and what have you already tried?",
-      "What's the most pressing piece right now — the practical side, or how it's making you feel?",
+      "What's the most pressing piece right now â€” the practical side, or how it's making you feel?",
       "Walk me through what's going on and we can work out a next step together.",
     ],
   },
   {
     match: /^h[ae]y[\s!.]*$|^hi[\s!.]*$|^hello[\s!.]*$|good (morning|evening|afternoon|night)/i,
     replies: [
-      "Hey — good to have you here. How are you actually doing today?",
+      "Hey â€” good to have you here. How are you actually doing today?",
       "Hi! I'm here. What's on your mind?",
       "Hello! How's everything going with you lately?",
     ],
@@ -156,7 +157,7 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
   {
     match: /thank|thanks|helped|appreciate|feel better|that.?s good/i,
     replies: [
-      "Really glad that helped. Come back anytime — this space is always here for you.",
+      "Really glad that helped. Come back anytime â€” this space is always here for you.",
       "Of course. Take care of yourself today.",
       "Anytime. You deserve someone to talk to.",
     ],
@@ -172,11 +173,11 @@ const FALLBACK: { match: RegExp; replies: string[] }[] = [
 ];
 
 const GENERIC: string[] = [
-  "Tell me more — I want to understand what you're going through before I say anything.",
+  "Tell me more â€” I want to understand what you're going through before I say anything.",
   "That sounds like a lot. Can you share a bit more about what's been happening?",
   "What's weighing on you most about this right now?",
   "I want to make sure I understand properly. Can you walk me through it?",
-  "What would feel most helpful — to just be heard, or to think through what to do?",
+  "What would feel most helpful â€” to just be heard, or to think through what to do?",
   "You don't have to figure this out alone. What's been building up lately?",
   "That matters. What do you think is at the root of how you're feeling?",
 ];
@@ -193,10 +194,11 @@ function localReply(text: string): string {
   return r;
 }
 
-// ── Component ─────────────────────────────────────────────────────────────────
+// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const WELCOME = "Hi, I\u2019m here. Whatever\u2019s on your mind \u2014 big or small \u2014 you can talk to me.";
 
 export default function CompanionScreen() {
+  const { isMobile } = useBreakpoint();
   const [messages, setMessages] = useState<Message[]>([
     { id: 'w', sender: 'bot', content: WELCOME, time: getTime() },
   ]);
@@ -252,7 +254,7 @@ export default function CompanionScreen() {
       </View>
 
       {/* Chat card */}
-      <View style={s.card}>
+      <View style={[s.card, isMobile && s.cardMobile]}>
         <ScrollView ref={scrollRef} style={s.scroll} contentContainerStyle={s.scrollContent}
           showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           {messages.map((msg) => (
@@ -260,7 +262,7 @@ export default function CompanionScreen() {
               {msg.sender === 'bot' && (
                 <View style={s.avatar}><Sparkles size={11} color={Colors.primary} strokeWidth={2} /></View>
               )}
-              <View style={s.col}>
+              <View style={[s.col, isMobile && s.colMobile]}>
                 <View style={[s.bubble, msg.sender === 'user' ? s.bubbleUser : s.bubbleBot]}>
                   <Text style={[s.bubbleText, msg.sender === 'user' ? s.textUser : s.textBot]}>
                     {msg.content}
@@ -349,4 +351,6 @@ const s = StyleSheet.create({
   sendBtn: { width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.primary, alignItems: 'center', justifyContent: 'center' },
   sendOff: { opacity: 0.3 },
   disclaimer: { fontFamily: FontFamily.sans, fontSize: 10, color: Colors.textMuted, textAlign: 'center', marginTop: 10, lineHeight: 14 },
+  colMobile: { maxWidth: '84%' },
+  cardMobile: { minHeight: 260, borderRadius: 18 },
 });

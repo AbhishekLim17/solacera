@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal, ScrollView, Platform } from 'react-native';
 import { Plus, Trash2, Pencil, Check, Users, Calendar, UserRound, X } from 'lucide-react-native';
 import { Colors, FontFamily, FontSize, Spacing, Radii } from '../../constants/theme';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 const ASSIGNEE_COLORS: Record<string, { bg: string; text: string }> = {
   Mom:     { bg: '#fde8ee', text: '#c0516e' },
@@ -24,10 +25,11 @@ let idCounter = 10;
 const DEMO_TASKS: Task[] = [
   { id: '1', title: 'Morning walk with Grandma', description: 'A short 20-minute walk in the park.', assignee: 'Sister', date: '19 Aug, 7:30 am', status: 'pending' },
   { id: '2', title: 'Pick up prescription', description: 'From the pharmacy on 5th street before they close.', assignee: 'Dad', date: '19 Aug, 4:30 pm', status: 'pending' },
-  { id: '3', title: 'Prepare lunch', description: 'Light, low-salt meal — she prefers rice and dal.', assignee: 'Mom', date: '19 Aug, 12:00 pm', status: 'completed' },
+  { id: '3', title: 'Prepare lunch', description: 'Light, low-salt meal â€” she prefers rice and dal.', assignee: 'Mom', date: '19 Aug, 12:00 pm', status: 'completed' },
 ];
 
 export default function FamilyScreen() {
+  const { isMobile } = useBreakpoint();
   const [tasks, setTasks] = useState<Task[]>(DEMO_TASKS);
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState('');
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
   taskActions: { flexDirection: 'row', gap: 10, alignItems: 'center', paddingTop: 2 },
   // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', alignItems: 'center', justifyContent: 'center' },
-  modalBox: { backgroundColor: Colors.surface, borderRadius: Radii.xl, padding: 24, width: 420, maxWidth: '90%' },
+  modalBox: { backgroundColor: Colors.surface, borderRadius: Radii.xl, padding: 24, width: '92%', maxWidth: 480 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalTitle: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.lg, color: Colors.textPrimary },
   modalLabel: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.sm, color: Colors.textPrimary, marginBottom: 4, marginTop: 12 },
@@ -211,4 +213,5 @@ const styles = StyleSheet.create({
   createBtnText: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.base, color: Colors.white },
   cancelBtn: { flex: 1, borderRadius: Radii.pill, paddingVertical: 11, alignItems: 'center', borderWidth: 1.5, borderColor: Colors.border },
   cancelBtnText: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.base, color: Colors.textPrimary },
+  headerMobile: { flexDirection: 'column', gap: 10, alignItems: 'flex-start' },
 });

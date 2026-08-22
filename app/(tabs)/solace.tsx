@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Sparkles, BookOpen, Wind, Music, Leaf, Play, RotateCcw } from 'lucide-react-native';
 import { Colors, FontFamily, FontSize, Spacing, Radii } from '../../constants/theme';
+import { useBreakpoint } from '../../hooks/useBreakpoint';
 
 type ActivityType = 'Quiet Time' | 'Reading' | 'Breathing' | 'Music' | 'Relaxation';
 
@@ -22,6 +23,7 @@ function fmt(sec: number) {
 }
 
 export default function SolaceScreen() {
+  const { isMobile } = useBreakpoint();
   const [activity, setActivity] = useState<ActivityType | null>(null);
   const [duration, setDuration] = useState(5);
   const [secondsLeft, setSecondsLeft] = useState(5 * 60);
@@ -87,13 +89,13 @@ export default function SolaceScreen() {
 
       {/* Activity grid */}
       <Text style={styles.sectionLabel}>Choose an activity</Text>
-      <View style={styles.activityGrid}>
+      <View style={[styles.activityGrid, isMobile && styles.activityGridMobile]}>
         {ACTIVITIES.map(({ type, desc, Icon, iconColor, iconBg }) => {
           const sel = activity === type;
           return (
             <TouchableOpacity
               key={type}
-              style={[styles.actCard, sel && { borderColor: Colors.primary }]}
+              style={[styles.actCard, isMobile && styles.actCardMobile, sel && { borderColor: Colors.primary }]}
               onPress={() => pickActivity(type)}
               activeOpacity={0.8}
             >
@@ -129,8 +131,8 @@ export default function SolaceScreen() {
               {activeCfg && <activeCfg.Icon size={11} color={Colors.primary} strokeWidth={2} />}
               <Text style={styles.actBadgeText}>{activity}</Text>
             </View>
-            <View style={styles.timerCircle}>
-              <Text style={styles.timerText}>{fmt(secondsLeft)}</Text>
+            <View style={[styles.timerCircle, isMobile && styles.timerCircleMobile]}>
+              <Text style={[styles.timerText, isMobile && styles.timerTextMobile]}>{fmt(secondsLeft)}</Text>
               <Text style={styles.timerStatus}>{done ? 'done!' : running ? 'in progress' : 'ready'}</Text>
             </View>
             <View style={styles.timerActions}>
@@ -188,4 +190,8 @@ const styles = StyleSheet.create({
   resetBtnText: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.base, color: Colors.textPrimary },
   placeholderTitle: { fontFamily: FontFamily.sansMedium, fontSize: FontSize.base, color: Colors.textPrimary, textAlign: 'center' },
   placeholderSub: { fontFamily: FontFamily.sans, fontSize: FontSize.sm, color: Colors.primary, textAlign: 'center' },
+  activityGridMobile: { gap: 8 },
+  actCardMobile: { width: '47%', minHeight: 90 },
+  timerCircleMobile: { width: 130, height: 130, borderRadius: 65 },
+  timerTextMobile: { fontSize: 32 },
 });
